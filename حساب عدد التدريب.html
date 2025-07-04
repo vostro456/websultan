@@ -3,7 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <title>حساب تدريب الجنود</title>
+  
   <style>
+
+  
     body {
       background-color: #222;
       color: #f6c453;
@@ -16,6 +19,10 @@
     }
     .form-group {
       margin-bottom: 15px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
     }
     input, select {
       padding: 8px;
@@ -49,6 +56,8 @@
       padding: 10px;
       border-radius: 8px;
       font-size: 14px;
+      text-align: right;
+      line-height: 1.6;
     }
   </style>
 </head>
@@ -80,32 +89,39 @@
     <input type="number" id="manualTime" placeholder="وقت تدريب الجندي بالثواني (حسب قلعتك)">
   </div>
 
-  <h2>أدخل عدد كل نوع من التسريعات</h2>
+  <h2>عدد تسريعات حرة</h2>
   <div class="form-group">
-    <input type="number" id="b1" placeholder="عدد تسريعات 1 دقيقة">
-    <input type="number" id="b5" placeholder="عدد تسريعات 5 دقائق">
-    <input type="number" id="b30" placeholder="عدد تسريعات 30 دقيقة">
-    <input type="number" id="b60" placeholder="عدد تسريعات 1 ساعة">
-    <input type="number" id="b120" placeholder="عدد تسريعات 2 ساعة">
-    <input type="number" id="b480" placeholder="عدد تسريعات 8 ساعة">
-    <input type="number" id="b720" placeholder="عدد تسريعات 12 ساعة">
-    <input type="number" id="b1440" placeholder="عدد تسريعات 24 ساعة">
+    <input type="number" id="f1" placeholder="1 دقيقة">
+    <input type="number" id="f5" placeholder="5 دقائق">
+    <input type="number" id="f15" placeholder="15 دقائق">
+    <input type="number" id="f30" placeholder="30 دقيقة">
+    <input type="number" id="f60" placeholder="1 ساعة">
+    <input type="number" id="f120" placeholder="2 ساعة">
+    <input type="number" id="f480" placeholder="8 ساعة">
+    <input type="number" id="f720" placeholder="12 ساعة">
+    <input type="number" id="f1440" placeholder="24 ساعة">
   </div>
 
+  <h2>عدد تسريعات الجنود</h2>
+  <div class="form-group">
+    <input type="number" id="b1" placeholder="1 دقيقة">
+    <input type="number" id="b5" placeholder="5 دقائق">
+    <input type="number" id="b15" placeholder="15 دقائق">
+    <input type="number" id="b30" placeholder="30 دقيقة">
+    <input type="number" id="b60" placeholder="1 ساعة">
+    <input type="number" id="b120" placeholder="2 ساعة">
+    <input type="number" id="b480" placeholder="8 ساعة">
+    <input type="number" id="b720" placeholder="12 ساعة">
+    <input type="number" id="b1440" placeholder="24 ساعة">
+  </div>
+
+  <h2>الموارد</h2>
   <div class="form-group">
     <input type="number" id="wheat" placeholder="اجمالي القمح (مثلاً 520.6)">
-  </div>
-  <div class="form-group">
-    <input type="number" id="wood" placeholder="اجمالي الخشب (مثلاً 512.5)">
-  </div>
-  <div class="form-group">
-    <input type="number" id="iron" placeholder="اجمالي الحديد (مثلاً 116.5)">
-  </div>
-  <div class="form-group">
-    <input type="number" id="silver" placeholder="اجمالي الفضة (مثلاً 29.8)">
-  </div>
-  <div class="form-group">
-    <input type="number" id="crystal" placeholder="اجمالي البلور (مثلاً 2.1)">
+    <input type="number" id="wood" placeholder="اجمالي الخشب">
+    <input type="number" id="iron" placeholder="اجمالي الحديد">
+    <input type="number" id="silver" placeholder="اجمالي الفضة">
+    <input type="number" id="crystal" placeholder="اجمالي البلور">
   </div>
 
   <button onclick="calculate()">احسب</button>
@@ -113,6 +129,7 @@
   <div class="result" id="result"></div>
   <div class="summary" id="summary"></div>
 
+</body>
   <script>
     const troopData = {
       t1: { name: "جندي مستوى 1", cost: { wheat: 100, wood: 80, iron: 30, silver: 5, crystal: 0 }, time: 8 },
@@ -139,22 +156,18 @@
     }
 
     function calculateBoostInSeconds() {
-      const values = {
-        b1: 60,
-        b5: 300,
-        b30: 1800,
-        b60: 3600,
-        b120: 7200,
-        b480: 28800,
-        b720: 43200,
-        b1440: 86400
+      const boostValues = {
+        f1: 60, f5: 300, f30: 1800, f60: 3600, f120: 7200, f480: 28800, f720: 43200, f1440: 86400,
+        b1: 60, b5: 300, b30: 1800, b60: 3600, b120: 7200, b480: 28800, b720: 43200, b1440: 86400
       };
-      let total = 0;
-      for (let key in values) {
-        const count = parseInt(document.getElementById(key).value) || 0;
-        total += count * values[key];
+      let totalFree = 0, totalTroop = 0;
+      for (let key in boostValues) {
+        const count = parseInt(document.getElementById(key)?.value) || 0;
+        const seconds = count * boostValues[key];
+        if (key.startsWith("f")) totalFree += seconds;
+        else totalTroop += seconds;
       }
-      return total;
+      return { total: totalFree + totalTroop, free: totalFree, troop: totalTroop };
     }
 
     function calculate() {
@@ -173,19 +186,19 @@
       const iron = parseFloat(document.getElementById("iron").value) * 1_000_000 || 0;
       const silver = parseFloat(document.getElementById("silver").value) * 1_000_000 || 0;
       const crystal = parseFloat(document.getElementById("crystal").value) * 1_000_000 || 0;
-      const availableBoost = calculateBoostInSeconds();
+      const boost = calculateBoostInSeconds();
 
       const maxFromWheat = Math.floor(wheat / data.cost.wheat);
       const maxFromWood = Math.floor(wood / data.cost.wood);
       const maxFromIron = Math.floor(iron / data.cost.iron);
       const maxFromSilver = Math.floor(silver / data.cost.silver);
       const maxFromCrystal = data.cost.crystal > 0 ? Math.floor(crystal / data.cost.crystal) : Infinity;
-      const maxFromBoost = Math.floor(availableBoost / trainingTime);
+      const maxFromBoost = Math.floor(boost.total / trainingTime);
 
       const maxTrainable = Math.min(maxFromWheat, maxFromWood, maxFromIron, maxFromSilver, maxFromCrystal, maxFromBoost);
 
       const usedBoost = maxTrainable * trainingTime;
-      const remainingBoost = availableBoost - usedBoost;
+      const remainingBoost = boost.total - usedBoost;
 
       document.getElementById("result").innerHTML = `
         <p>👮 يمكنك تدريب <strong>${maxTrainable.toLocaleString()}</strong> من ${data.name}</p>
@@ -194,7 +207,9 @@
       `;
 
       document.getElementById("summary").innerHTML = `
-        ⏱️ اجمالي التسريعات: ${(availableBoost / 3600).toFixed(2)} ساعة
+        ⏱️ اجمالي التسريعات: <strong>${(boost.total / 3600).toFixed(2)}</strong> ساعة<br>
+        🔹 الحرة: <strong>${(boost.free / 3600).toFixed(2)}</strong> ساعة<br>
+        🔸 الجنود: <strong>${(boost.troop / 3600).toFixed(2)}</strong> ساعة
       `;
     }
   </script>
