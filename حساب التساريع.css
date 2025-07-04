@@ -153,3 +153,21 @@ img {
 .hidden {
   display: none;
 }
+@media (max-width: 768px) {
+    body {
+        font-size: 16px;
+        padding: 10px;
+    }
+
+    .container {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    img {
+        width: 100%;
+        height: auto;
+    }
+
+    /* عدل أي عنصر آخر يسبب مشاكل في الهواتف هنا */
+}
