@@ -1,25 +1,34 @@
-body ,html {
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-    font-family: 'Segoe UI', sans-serif;
+}
+
+body, html {
+  width: 100%;
+  overflow-x: hidden;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: black;
+  color: white;
 }
 
 img {
-  display: block;  /* removes small gaps under image */
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
-
 
 .image-container {
   position: relative;
   width: 100%;
-  max-height: 100vh;
+  height: 100vh;
   overflow: hidden;
 }
 
 .bg-image {
   width: 100%;
-  height: auto;
-  display: block;
+  height: 100%;
+  object-fit: cover;
 }
 
 .content-overlay {
@@ -28,28 +37,27 @@ img {
   left: 0;
   width: 100%;
   height: 100%;
-  padding: 30px;
-  box-sizing: border-box;
-  background: rgba(0, 0, 0, 0.4); /* semi-transparent overlay */
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  color: #f6c453;
+  align-items: center;
 }
 
 .title {
-  font-size: 48px;
-  margin-bottom: 20px;
+  font-size: 40px;
   text-shadow: 2px 2px 5px black;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 .top-bar {
   display: flex;
-  gap: 20px;
-  margin-bottom: 30px;
-  align-items: center;
   flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
 }
 
 .menu-btn {
@@ -62,38 +70,17 @@ img {
   border-radius: 5px;
 }
 
-.search {
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 5px;
-  border: none;
-  width: 250px;
-}
-
-.button-group {
-  display: flex;
-  gap: 15px;
-  flex-wrap: wrap;
-}
-
-.btn {
-  background-color: transparent;
-  border: 2px solid #f6c453;
-  color: #f6c453;
-  padding: 10px 20px;
-  border-radius: 5px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: 0.3s ease;
-}
-
-.btn:hover {
-  background-color: #f6c453;
-  color: black;
-}
 .search-container {
   position: relative;
   width: 250px;
+}
+
+.search {
+  padding: 10px;
+  width: 100%;
+  font-size: 16px;
+  border-radius: 5px;
+  border: none;
 }
 
 .suggestions {
@@ -103,14 +90,13 @@ img {
   right: 0;
   max-height: 200px;
   overflow-y: auto;
-  background-color: #fff;
-  color: #000;
+  background-color: white;
+  color: black;
   border: 1px solid #ccc;
   list-style: none;
-  margin: 0;
   padding: 0;
+  margin: 0;
   z-index: 1000;
-  font-size: 14px;
 }
 
 .suggestions li {
@@ -122,9 +108,10 @@ img {
   background-color: #f6c453;
   color: black;
 }
+
 .dropdown-menu {
   position: absolute;
-  top: 70px; /* حسب مكان زر القائمة */
+  top: 70px;
   right: 50px;
   background-color: rgba(0, 0, 0, 0.9);
   border: 1px solid #f6c453;
@@ -153,21 +140,46 @@ img {
 .hidden {
   display: none;
 }
+
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btn {
+  background-color: transparent;
+  border: 2px solid #f6c453;
+  color: #f6c453;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  text-decoration: none;
+  transition: 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #f6c453;
+  color: black;
+}
+
 @media (max-width: 768px) {
-    body {
-        font-size: 16px;
-        padding: 10px;
-    }
+  .title {
+    font-size: 28px;
+  }
 
-    .container {
-        flex-direction: column;
-        width: 100%;
-    }
+  .menu-btn, .btn {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
 
-    img {
-        width: 100%;
-        height: auto;
-    }
+  .search-container {
+    width: 100%;
+  }
 
-    /* عدل أي عنصر آخر يسبب مشاكل في الهواتف هنا */
+  .dropdown-menu {
+    right: 20px;
+    width: 90%;
+  }
 }
