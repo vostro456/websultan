@@ -40,6 +40,16 @@
       font-size: 18px;
       color: #ffd700;
     }
+    .summary {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #333;
+      color: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
@@ -70,6 +80,18 @@
     <input type="number" id="manualTime" placeholder="وقت تدريب الجندي بالثواني (حسب قلعتك)">
   </div>
 
+  <h2>أدخل عدد كل نوع من التسريعات</h2>
+  <div class="form-group">
+    <input type="number" id="b1" placeholder="عدد تسريعات 1 دقيقة">
+    <input type="number" id="b5" placeholder="عدد تسريعات 5 دقائق">
+    <input type="number" id="b30" placeholder="عدد تسريعات 30 دقيقة">
+    <input type="number" id="b60" placeholder="عدد تسريعات 1 ساعة">
+    <input type="number" id="b120" placeholder="عدد تسريعات 2 ساعة">
+    <input type="number" id="b480" placeholder="عدد تسريعات 8 ساعة">
+    <input type="number" id="b720" placeholder="عدد تسريعات 12 ساعة">
+    <input type="number" id="b1440" placeholder="عدد تسريعات 24 ساعة">
+  </div>
+
   <div class="form-group">
     <input type="number" id="wheat" placeholder="اجمالي القمح (مثلاً 520.6)">
   </div>
@@ -85,13 +107,11 @@
   <div class="form-group">
     <input type="number" id="crystal" placeholder="اجمالي البلور (مثلاً 2.1)">
   </div>
-  <div class="form-group">
-    <input type="number" id="availableBoostHours" placeholder="اجمالي التسريعات (ساعات)">
-  </div>
 
   <button onclick="calculate()">احسب</button>
 
   <div class="result" id="result"></div>
+  <div class="summary" id="summary"></div>
 
   <script>
     const troopData = {
@@ -118,10 +138,28 @@
       return `${days} يوم و ${hours} ساعة و ${minutes} دقيقة`;
     }
 
+    function calculateBoostInSeconds() {
+      const values = {
+        b1: 60,
+        b5: 300,
+        b30: 1800,
+        b60: 3600,
+        b120: 7200,
+        b480: 28800,
+        b720: 43200,
+        b1440: 86400
+      };
+      let total = 0;
+      for (let key in values) {
+        const count = parseInt(document.getElementById(key).value) || 0;
+        total += count * values[key];
+      }
+      return total;
+    }
+
     function calculate() {
       const type = document.getElementById("troopType").value;
       const data = troopData[type];
-
       if (!data) {
         alert("يرجى اختيار نوع الجندي.");
         return;
@@ -135,7 +173,7 @@
       const iron = parseFloat(document.getElementById("iron").value) * 1_000_000 || 0;
       const silver = parseFloat(document.getElementById("silver").value) * 1_000_000 || 0;
       const crystal = parseFloat(document.getElementById("crystal").value) * 1_000_000 || 0;
-      const availableBoost = parseFloat(document.getElementById("availableBoostHours").value) * 3600 || 0;
+      const availableBoost = calculateBoostInSeconds();
 
       const maxFromWheat = Math.floor(wheat / data.cost.wheat);
       const maxFromWood = Math.floor(wood / data.cost.wood);
@@ -153,6 +191,10 @@
         <p>👮 يمكنك تدريب <strong>${maxTrainable.toLocaleString()}</strong> من ${data.name}</p>
         <p>🕑 الوقت المستهلك: ${formatTime(usedBoost)} (${Math.floor(usedBoost / 3600)} ساعة)</p>
         <p>🔋 المتبقي من التسريعات: ${formatTime(remainingBoost)}</p>
+      `;
+
+      document.getElementById("summary").innerHTML = `
+        ⏱️ اجمالي التسريعات: ${(availableBoost / 3600).toFixed(2)} ساعة
       `;
     }
   </script>
