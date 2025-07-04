@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>انتقام السلاطين</title>
+    <link rel="stylesheet" href="حساب التساريع.css">
+    <link rel="icon" href="سلطان.jfif" type="image/jfif">
+
+
+
+</head>
+<body>
+ <div class="image-container">
+    <img src="sultan.jpg" alt="Sultan Image" class="bg-image">
+
+    <div class="content-overlay">
+      <h1 class="title">انتقام السلاطين</h1>
+
+    <div class="top-bar">
+  <button class="menu-btn">☰ القائمة</button>
+<div id="menu" class="dropdown-menu hidden">
+  <a href="#">❤️ دعمنا</a>
+  <a href="#">ℹ️ حول الموقع</a>
+  <a href="#">🏠 الصفحة الرئيسية</a>
+</div>
+
+
+
+
+
+
+
+
+  <div class="search-container">
+    <input type="text" id="search" class="search" placeholder="... ابحث في السيرفرات">
+    <ul id="suggestions" class="suggestions"></ul>
+  </div>
+</div>
+
+
+      <div class="button-group">
+    <a href="حساب اجمالي تسريعات.html" class="btn">حساب اجمالي تسريعات</a>
+    <a href="ساب اجمالي موارد الحقيبة.html" class="btn">حساب اجمالي موارد الحقيبة</a>
+    <a href="حساب عدد التدريب.html" class="btn">حساب عدد التدريب</a>
+      </div>
+    </div>
+  </div>
+</body>
+
+
+<script>
+  const searchInput = document.getElementById('search');
+  const suggestions = document.getElementById('suggestions');
+
+  // Create server list (Server 1 to Server 600)
+  const servers = [];
+  for (let i = 1; i <= 600; i++) {
+    servers.push(`السيرفر ${i}`);
+  }
+
+  // Filter and display suggestions
+  searchInput.addEventListener('input', () => {
+    const value = searchInput.value.trim();
+    suggestions.innerHTML = '';
+
+    if (value === '') return;
+
+    const filtered = servers.filter(server =>
+      server.includes(value)
+    );
+
+    filtered.slice(0, 30).forEach(server => {
+      const li = document.createElement('li');
+      li.textContent = server;
+      li.addEventListener('click', () => {
+        searchInput.value = server;
+        suggestions.innerHTML = '';
+      });
+      suggestions.appendChild(li);
+    });
+  });
+
+  // Close suggestions when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!document.querySelector('.search-container').contains(e.target)) {
+      suggestions.innerHTML = '';
+    }
+  });
+
+
+
+  const menuBtn = document.querySelector('.menu-btn');
+const menu = document.getElementById('menu');
+
+menuBtn.addEventListener('click', () => {
+  menu.classList.toggle('hidden');
+});
+
+// إغلاق القائمة إذا ضغط المستخدم خارجها
+document.addEventListener('click', function (e) {
+  if (!menu.contains(e.target) && !menuBtn.contains(e.target)) {
+    menu.classList.add('hidden');
+  }
+});
+
+</script>
+</html>

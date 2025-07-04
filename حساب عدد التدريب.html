@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>حساب تدريب الجنود</title>
+  <style>
+    body {
+      background-color: #222;
+      color: #f6c453;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    input, select {
+      padding: 8px;
+      width: 220px;
+      border-radius: 5px;
+      border: none;
+      text-align: center;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #f6c453;
+      color: black;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #ffd700;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>حساب عدد الجنود الممكن تدريبهم</h1>
+
+  <div class="form-group">
+    <select id="troopType">
+      <option disabled selected>اختر نوع الجندي</option>
+      <option value="t1">جندي مستوى 1</option>
+      <option value="t2">جندي مستوى 2</option>
+      <option value="t3">جندي مستوى 3</option>
+      <option value="t4">جندي مستوى 4</option>
+      <option value="t5">جندي مستوى 5</option>
+      <option value="t6">جندي مستوى 6</option>
+      <option value="t7">جندي مستوى 7</option>
+      <option value="t8">جندي مستوى 8</option>
+      <option value="t9">جندي مستوى 9</option>
+      <option value="t10">جندي مستوى 10</option>
+      <option value="t11">جندي مستوى 11</option>
+      <option value="t12">جندي مستوى 12</option>
+      <option value="t12_super">جندي خارق مستوى 12</option>
+      <option value="armor">جندي مدرع</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <input type="number" id="manualTime" placeholder="وقت تدريب الجندي بالثواني (حسب قلعتك)">
+  </div>
+
+  <div class="form-group">
+    <input type="number" id="wheat" placeholder="اجمالي القمح (مثلاً 520.6)">
+  </div>
+  <div class="form-group">
+    <input type="number" id="wood" placeholder="اجمالي الخشب (مثلاً 512.5)">
+  </div>
+  <div class="form-group">
+    <input type="number" id="iron" placeholder="اجمالي الحديد (مثلاً 116.5)">
+  </div>
+  <div class="form-group">
+    <input type="number" id="silver" placeholder="اجمالي الفضة (مثلاً 29.8)">
+  </div>
+  <div class="form-group">
+    <input type="number" id="crystal" placeholder="اجمالي البلور (مثلاً 2.1)">
+  </div>
+  <div class="form-group">
+    <input type="number" id="availableBoostHours" placeholder="اجمالي التسريعات (ساعات)">
+  </div>
+
+  <button onclick="calculate()">احسب</button>
+
+  <div class="result" id="result"></div>
+
+  <script>
+    const troopData = {
+      t1: { name: "جندي مستوى 1", cost: { wheat: 100, wood: 80, iron: 30, silver: 5, crystal: 0 }, time: 8 },
+      t2: { name: "جندي مستوى 2", cost: { wheat: 120, wood: 100, iron: 40, silver: 6, crystal: 0 }, time: 9 },
+      t3: { name: "جندي مستوى 3", cost: { wheat: 150, wood: 120, iron: 50, silver: 8, crystal: 0 }, time: 10 },
+      t4: { name: "جندي مستوى 4", cost: { wheat: 180, wood: 150, iron: 60, silver: 10, crystal: 0 }, time: 11 },
+      t5: { name: "جندي مستوى 5", cost: { wheat: 220, wood: 180, iron: 75, silver: 12, crystal: 0 }, time: 12 },
+      t6: { name: "جندي مستوى 6", cost: { wheat: 260, wood: 220, iron: 85, silver: 15, crystal: 0 }, time: 13 },
+      t7: { name: "جندي مستوى 7", cost: { wheat: 300, wood: 260, iron: 100, silver: 18, crystal: 0 }, time: 14 },
+      t8: { name: "جندي مستوى 8", cost: { wheat: 350, wood: 300, iron: 115, silver: 20, crystal: 0 }, time: 15 },
+      t9: { name: "جندي مستوى 9", cost: { wheat: 400, wood: 350, iron: 125, silver: 22, crystal: 0 }, time: 16 },
+      t10: { name: "جندي مستوى 10", cost: { wheat: 500, wood: 400, iron: 150, silver: 25, crystal: 0 }, time: 18 },
+      t11: { name: "جندي مستوى 11", cost: { wheat: 700, wood: 500, iron: 200, silver: 28, crystal: 0 }, time: 20 },
+      t12: { name: "جندي مستوى 12", cost: { wheat: 850, wood: 600, iron: 250, silver: 30, crystal: 10 }, time: 22 },
+      t12_super: { name: "جندي خارق مستوى 12", cost: { wheat: 997, wood: 497, iron: 129, silver: 30, crystal: 20 }, time: 21 },
+      armor: { name: "جندي مدرع", cost: { wheat: 1300, wood: 800, iron: 300, silver: 50, crystal: 45 }, time: 28 }
+    };
+
+    function formatTime(seconds) {
+      const days = Math.floor(seconds / 86400);
+      const hours = Math.floor((seconds % 86400) / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      return `${days} يوم و ${hours} ساعة و ${minutes} دقيقة`;
+    }
+
+    function calculate() {
+      const type = document.getElementById("troopType").value;
+      const data = troopData[type];
+
+      if (!data) {
+        alert("يرجى اختيار نوع الجندي.");
+        return;
+      }
+
+      const customTime = parseFloat(document.getElementById("manualTime").value);
+      const trainingTime = !isNaN(customTime) && customTime > 0 ? customTime : data.time;
+
+      const wheat = parseFloat(document.getElementById("wheat").value) * 1_000_000 || 0;
+      const wood = parseFloat(document.getElementById("wood").value) * 1_000_000 || 0;
+      const iron = parseFloat(document.getElementById("iron").value) * 1_000_000 || 0;
+      const silver = parseFloat(document.getElementById("silver").value) * 1_000_000 || 0;
+      const crystal = parseFloat(document.getElementById("crystal").value) * 1_000_000 || 0;
+      const availableBoost = parseFloat(document.getElementById("availableBoostHours").value) * 3600 || 0;
+
+      const maxFromWheat = Math.floor(wheat / data.cost.wheat);
+      const maxFromWood = Math.floor(wood / data.cost.wood);
+      const maxFromIron = Math.floor(iron / data.cost.iron);
+      const maxFromSilver = Math.floor(silver / data.cost.silver);
+      const maxFromCrystal = data.cost.crystal > 0 ? Math.floor(crystal / data.cost.crystal) : Infinity;
+      const maxFromBoost = Math.floor(availableBoost / trainingTime);
+
+      const maxTrainable = Math.min(maxFromWheat, maxFromWood, maxFromIron, maxFromSilver, maxFromCrystal, maxFromBoost);
+
+      const usedBoost = maxTrainable * trainingTime;
+      const remainingBoost = availableBoost - usedBoost;
+
+      document.getElementById("result").innerHTML = `
+        <p>👮 يمكنك تدريب <strong>${maxTrainable.toLocaleString()}</strong> من ${data.name}</p>
+        <p>🕑 الوقت المستهلك: ${formatTime(usedBoost)} (${Math.floor(usedBoost / 3600)} ساعة)</p>
+        <p>🔋 المتبقي من التسريعات: ${formatTime(remainingBoost)}</p>
+      `;
+    }
+  </script>
+
+</body>
+</html>

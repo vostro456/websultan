@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>حساب تسريعات انتقام السلاطين</title>
+  <style>
+    body {
+      background-color: #222;
+      color: #f6c453;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 30px;
+    }
+
+    .section {
+      margin-bottom: 40px;
+      border: 1px solid #f6c453;
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    .section h2 {
+      margin-bottom: 15px;
+      font-size: 20px;
+    }
+
+    .section input {
+      width: 60px;
+      margin: 5px;
+      padding: 8px;
+      border-radius: 5px;
+      border: none;
+    }
+
+    .section .total {
+      margin-top: 10px;
+      font-size: 16px;
+      color: #ffd700;
+    }
+
+    .section button {
+      margin-top: 15px;
+      padding: 8px 20px;
+      font-size: 16px;
+      background-color: #f6c453;
+      color: black;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+
+  </style>
+</head>
+<body>
+
+  <h1>حاسبة التسريعات</h1>
+
+  <!-- تسريعات حرة -->
+  <div class="section">
+    <h2>تسريعات حرة</h2>
+  <input type="number" placeholder="1 دقيقة" id="free1">
+  <input type="number" placeholder="5 دقيقة" id="free5">
+  <input type="number" placeholder="15 دقيقة" id="free15">
+  <input type="number" placeholder=" 30 دقيقة" id="free30">
+  <input type="number" placeholder="ساعة 1" id="free60">
+  <input type="number" placeholder="2 ساعة" id="free120">
+  <input type="number" placeholder="8 ساعات" id="free480">
+  <input type="number" placeholder="12 ساعة" id="free720">
+  <input type="number" placeholder="24 ساعة" id="free1440">
+  <button onclick="calculateType('free')">احسب الإجمالي</button>
+  <p id="total-free" class="total">تسريعاتك الحرة هي: 0 دقيقة</p>
+</div>
+
+
+  <!-- تسريعات الجنود -->
+  <div class="section">
+    <h2>تسريعات الجنود</h2>
+    <input type="number" placeholder="1 دقيقة" id="troop1">
+    <input type="number" placeholder="5 دقائق" id="troop5">
+    <input type="number" placeholder="15 دقيقة" id="free15">
+    <input type="number" placeholder="30 دقيقة" id="troop30">
+    <input type="number" placeholder="1 ساعة" id="troop60">
+    <input type="number" placeholder="2 ساعة" id="troop120">
+    <input type="number" placeholder="8 ساعات" id="troop480">
+    <input type="number" placeholder="12 ساعة" id="troop720">
+    <input type="number" placeholder="24 ساعة" id="troop1440">
+    <br>
+    <button onclick="calculateType('troop')">احسب الإجمالي</button>
+    <p id="total-troop" class="total">تسريعاتك للجنود هي: 0 دقيقة</p>
+  </div>
+
+  <!-- تسريعات البناء -->
+  <div class="section">
+    <h2>تسريعات البناء</h2>
+    <input type="number" placeholder="1 دقيقة" id="build1">
+    <input type="number" placeholder="5 دقائق" id="build5">
+    <input type="number" placeholder="15 دقيقة" id="build15">
+    <input type="number" placeholder="30 دقيقة" id="build30">
+    <input type="number" placeholder="1 ساعة" id="build60">
+    <input type="number" placeholder="2 ساعة" id="build120">
+    <input type="number" placeholder="8 ساعات" id="build480">
+    <input type="number" placeholder="12 ساعة" id="build720">
+    <input type="number" placeholder="24 ساعة" id="build1440">
+    <br>
+    <button onclick="calculateType('build')">احسب الإجمالي</button>
+    <p id="total-build" class="total">تسريعاتك للبناء هي: 0 دقيقة</p>
+  </div>
+
+  <!-- تسريعات العلوم -->
+  <div class="section">
+    <h2>تسريعات العلوم</h2>
+    <input type="number" placeholder="1 دقيقة" id="tech1">
+    <input type="number" placeholder="5 دقائق" id="tech5">
+    <input type="number" placeholder="15 دقيقة" id="tech15">
+    <input type="number" placeholder="30 دقيقة" id="tech30">
+    <input type="number" placeholder="1 ساعة" id="tech60">
+    <input type="number" placeholder="2 ساعة" id="tech120">
+    <input type="number" placeholder="8 ساعات" id="tech480">
+    <input type="number" placeholder="12 ساعة" id="tech720">
+    <input type="number" placeholder="24 ساعة" id="tech1440">
+    <br>
+    <button onclick="calculateType('tech')">احسب الإجمالي</button>
+    <p id="total-tech" class="total">تسريعاتك للعلوم هي: 0 دقيقة</p>
+  </div>
+
+  <script>
+    function calculateType(type) {
+      const minutesList = [1, 5, 30, 60, 120, 480, 720, 1440];
+      let total = 0;
+
+      minutesList.forEach(min => {
+        const input = document.getElementById(`${type}${min}`);
+        const value = parseInt(input?.value) || 0;
+        total += value * min;
+      });
+
+      const hours = Math.floor(total / 60);
+      const mins = total % 60;
+
+      let typeLabel = '';
+      switch (type) {
+        case 'free': typeLabel = 'الحرة'; break;
+        case 'troop': typeLabel = 'للجنود'; break;
+        case 'build': typeLabel = 'للبناء'; break;
+        case 'tech': typeLabel = 'للعلوم'; break;
+      }
+
+      document.getElementById(`total-${type}`).textContent = `تسريعاتك ${typeLabel} هي: ${hours} ساعة و ${mins} دقيقة`;
+    }
+  </script>
+
+</body>
+</html>
